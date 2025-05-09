@@ -2,6 +2,7 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
 const { initiateTeamCreation } = require("./commands/teamCommands");
+const { initSteamNewsChecker, checkSteamNews } = require("./commands/steamNewsCommand")
 
 // Create a new client instance with ALL needed intents
 const client = new Client({
@@ -16,6 +17,8 @@ const client = new Client({
 // When the client is ready, run this code (only once)
 client.once("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  initSteamNewsChecker(client);
+  console.log('Started Steam News Checker')
 });
 
 // Listen for messages
@@ -76,6 +79,12 @@ client.on("messageCreate", async (message) => {
   // Unified team creation command
   if (message.content === "!randomTeams") {
     initiateTeamCreation(message);
+  }
+
+  // Manual game updates check command
+  if (message.content === "!gameUpdates") {
+    // await message.reply("Checking for game updates, sir. One moment please...");
+    checkSteamNews(client, message);
   }
 });
 
